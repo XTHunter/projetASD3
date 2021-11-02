@@ -1,0 +1,18 @@
+classes: 
+1) regions
+	2 constructeurs
+		une pour generer un quadtree
+		l'autre pour generer un tableau 2d de 3x3
+	une methode pour rechercher le numero du region (case du tableau 2d) 
+	une methode pour modifier les feuilles (qui sont les elements du tableau 2d)
+
+2) joueurs
+
+3) game/main
+	constructeur en donnant un entier positive n
+		si n=0
+			appel au constructeur du tableau 2d
+		sinon
+			appel au constructeur quadtree
+			et pour chaque branche du quad tree
+			un appel reccursive au methode avec n-1
