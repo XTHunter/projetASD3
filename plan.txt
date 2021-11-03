@@ -1,18 +1,54 @@
 classes: 
-1) regions
+1) region
 	2 constructeurs
 		une pour generer un quadtree
-		l'autre pour generer un tableau 2d de 3x3
-	une methode pour rechercher le numero du region (case du tableau 2d) 
-	une methode pour modifier les feuilles (qui sont les elements du tableau 2d)
+		l'autre pour generer un tableau T 2d de 3x3 tout avec la lettre 'A'
+		 
 
-2) joueurs
-
-3) game/main
-	constructeur en donnant un entier positive n
+	methodes:
+	public fonction construction(entier k): region 
 		si n=0
 			appel au constructeur du tableau 2d
 		sinon
 			appel au constructeur quadtree
 			et pour chaque branche du quad tree
 			un appel reccursive au methode avec n-1
+
+	public procedure jouer(point x, region a, char r)
+		verification si les coordonnées de x et y sont entre 1 et 3*2^k
+		si k>0
+			comme une recherche d'un arbre binaire
+			si (x.x<(3*2^k)/2 et x.y<(3*2^k)/2) alors jouer(x,a.uu,r)
+			si (x.x<(3*2^k)/2 et x.y>(3*2^k)/2) alors x.y-=(3*2^k)/2 et jouer(x,a.ud,r)
+			si (x.x>(3*2^k)/2 et x.y<(3*2^k)/2) alors x.x-=(3*2^k)/2 et jouer(x,a.da,r)
+			si (x.x>(3*2^k)/2 et x.y>(3*2^k)/2) alors x.x-=(3*2^k)/2 et x.y-=(3*2^k)/2 et jouer(x,a.dd,r)
+		sinon (puisque ici 3*2^k=3)
+			T[x.x-1][x.y-1]=r
+
+	private fonction couleur(point x): char 
+		si k>0
+			si (x.x<(3*2^k)/2 et x.y<(3*2^k)/2) alors retourner jouer(x,a.uu,r)
+			si (x.x<(3*2^k)/2 et x.y>(3*2^k)/2) alors x.y-=(3*2^k)/2 et retourner jouer(x,a.ud,r)
+			si (x.x>(3*2^k)/2 et x.y<(3*2^k)/2) alors x.x-=(3*2^k)/2 et retourner jouer(x,a.da,r)
+			si (x.x>(3*2^k)/2 et x.y>(3*2^k)/2) alors x.x-=(3*2^k)/2 et retourner x.y-=(3*2^k)/2 et jouer(x,a.dd,r)
+		sinon
+			retourner T[x.x-1][x.y-1]
+
+	public procedure afficher()
+		pour i de 1 a 3*2^k faire
+			pour j de 1 a 3*2^k faire
+				si j<3*2^k alors
+					ecrire(couleur (j,i))
+				sinon
+					ecrire(couleur (j,i) \n)
+
+
+		
+
+2) joueurs
+
+3) jeux
+
+4) main
+	
+		
