@@ -1,10 +1,9 @@
 classes: 
 1) region
 
-	sous-classe point:
-		2 variables x et y entiers
-		1 constructeur
-		des methodes pour manipuler les points
+	variables:
+	point numRegion
+	char couleur
 
 	
 	2 constructeurs
