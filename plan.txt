@@ -1,5 +1,12 @@
 classes: 
 1) region
+
+	sous-classe point:
+		2 variables x et y entiers
+		1 constructeur
+		des methodes pour manipuler les points
+
+	
 	2 constructeurs
 		une pour generer un quadtree
 		l'autre pour generer un tableau T 2d de 3x3 tout avec la lettre 'A'
