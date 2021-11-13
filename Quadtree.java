@@ -1,118 +1,148 @@
-import java.awt.Point;
+package projetCameleon;
 
+//tout les methodes sont fonctionelles
+//pour créer une gille de 3*(2^k) regions a l'aide d'une arbre quadratique(arbre complet avec des feulles qui sont des tableaux
 public class Quadtree{
-  Node regions;
-  int hauteur;
+  
 
-  public class Node{
-    char couleur;
-    int hauteur;
-    char[] tab;
-    Node uu,ud,dd,du;
-    Node(){
-      couleur='A';
-      tab=null;
-      uu=null;
-      ud=null;
-      dd=null;
-      du=null;
-    }
-  }  
-
-  public void creerRegion(Node a, int k){
-    a= new Node();
-    a.hauteur=k;
-    if(k==0){
-      a.tab = new char[9];
-      for (int i=0; i<9; i++){
-        a.tab[i]='A';
-      }
-    }else{
-      creerRegion(a.uu, k-1);
-      creerRegion(a.ud, k-1);
-      creerRegion(a.dd, k-1);
-      creerRegion(a.du, k-1);
-    }
-  }
-
-  public char afficherCouleur(Node n, Point p){
-      int mid = (int)(3*Math.pow(2,(double)(n.hauteur))/2);
-      if(n.hauteur==0){
-        if(p.y==3){
-          return n.tab[p.x+6];
-        }
-        if(p.y==2){
-          return n.tab[p.x+3];
-        }
-        if(p.y==1){
-          return n.tab[p.x];
-        }
-      }else{
-        if(p.x<=mid&&p.y<=mid){
-          return afficherCouleur(n.uu,p);
-        }
-        if(p.x<=mid&&p.y>mid){
-          return afficherCouleur(n.ud,new Point(p.x, p.y-mid));
-        }
-        if(p.x>mid&&p.y<=mid){
-          return afficherCouleur(n.du,new Point(p.x-mid, p.y));
-        }
-        if(p.x>mid&&p.y>mid){
-          return afficherCouleur(n.dd,new Point(p.x-mid, p.y-mid));
-        }
-      }
-  }
-
-  public void afficher(Node n){
-    int cote = (int)(3*Math.pow(2,(double)(n.hauteur)));
-    for (int i=1; i<=cote; i++){
-      for (int j=1; j<=cote; j++){
-        if (j<cote) {
-          System.out.print(afficherCouleur(n,new Point(j, i)));
-        } else {
-          System.out.println(afficherCouleur(n,new Point(j, i)));
-        }
-      }
-    }
-  }
-
-  public void changerCouleur(Node n, Point p, char a){
-    int mid = (int)(3*Math.pow(2,(double)(n.hauteur))/2);
-      if(n.hauteur==0){
-        if(p.y==3){
-          n.tab[p.x+6]=a;
-        }
-        if(p.y==2){
-          n.tab[p.x+3]=a;
-        }
-        if(p.y==1){
-          n.tab[p.x]=a;
-        }
-      }else{
-        if(p.x<=mid&&p.y<=mid){
-          changerCouleur(n.uu,p,a);
-          return;
-        }
-        if(p.x<=mid&&p.y>mid){
-          changerCouleur(n.ud,new Point(p.x, p.y-mid),a);
-          return;
-        }
-        if(p.x>mid&&p.y<=mid){
-          changerCouleur(n.du,new Point(p.x-mid, p.y),a);
-          return;
-        }
-        if(p.x>mid&&p.y>mid){
-          changerCouleur(n.dd,new Point(p.x-mid, p.y-mid),a);
-          return;
-        }
-      }
-  }
-
-  public boolean regionRempli(Node n){
-    if(n.couleur=='A'){
-      return false;
-    }else{
-      return true;
-    }
-  }
+  	public class Node{
+  		char couleur;
+  		char[] tab;
+  		int hauteur;
+  		Node uu,ud,dd,du;
+  		
+  		Node(int h, char c){
+  			hauteur=h;
+  			couleur=c;
+  			tab=null;
+  			uu=null;
+  			ud=null;
+  			dd=null;
+  			du=null;
+  		}
+  	}
+  	
+  	public Node board;
+  	
+  	public Quadtree(int i){
+  		board=new Node(i, 'A');
+  	}
+  	
+  	//pour inserer un noeud
+  	private Node insert(Node n, int h, char c) {
+  		if(n==null) {
+  			n=new Node(h,c);
+  		}
+  		return n;
+  	}
+  	
+  
+  	//pour ajouter 4 fils
+  	private void addSubNodes(Node n) {
+  		if (n.uu==null && n.ud==null && n.dd==null && n.du==null) {
+  			n.uu=insert(n.uu, n.hauteur-1, n.couleur);
+  			n.ud=insert(n.ud, n.hauteur-1, n.couleur);
+  			n.dd=insert(n.dd, n.hauteur-1, n.couleur);
+  			n.du=insert(n.du, n.hauteur-1, n.couleur);
+  		}
+  	}
+  	
+  	//ajouter un feuill (
+  	private void addLastRegion(Node n) {
+  		if(n.tab==null) {
+  			n.tab=new char[] {'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A', 'A'};
+  		}
+  	}
+  	
+  	//pour céer le plateau du jeu
+  	public void createBoard(Node n) {
+  		if(n.hauteur==0) {
+  			addLastRegion(n);
+  		}else {
+  			addSubNodes(n);
+  			createBoard(n.uu);
+  			createBoard(n.ud);
+  			createBoard(n.dd);
+  			createBoard(n.du);
+  		}
+  	}
+  	
+  	//calculer 3*(2^k)
+  	private int dim(Node n) {
+  		return (int)(3*Math.pow(2, (double)(n.hauteur)));
+  	}
+  	
+  	//pour donner le couleur du case (x,y)
+  	private char showColor(Node n, int x, int y) {
+  		char f = 0;
+  		if(n.hauteur==0) {
+  			f=n.tab[(y-1)*3+(x-1)];
+  		}else {
+  			if(x<=dim(n)/2 && y<=dim(n)/2) {
+  				return showColor(n.uu, x,y);
+  			}
+  			if(x<=dim(n)/2 && y>dim(n)/2) {
+  				return showColor(n.ud, x,y-(dim(n)/2));
+  			}
+  			if(x>dim(n)/2 && y>dim(n)/2) {
+  				return showColor(n.dd, x-(dim(n)/2),y-(dim(n)/2));
+  			}
+  			if(x>dim(n)/2 && y<=dim(n)/2) {
+  				return showColor(n.du, x-(dim(n)/2),y);
+  			}
+  		}
+  		return f;
+  	}
+  	
+  	//pour afficher le plateau du jeux
+  	public void showBoard(Node n) {
+  		for(int i=1; i<=dim(n); i++) {//y
+  			for(int j=1; j<=dim(n); j++) {
+  				if(j==dim(n)) {
+  					System.out.println(showColor(n, j,i));
+  				}else {
+  					System.out.print(showColor(n, j,i));
+  				}
+  			}
+  		}
+  	}
+  	
+  	//pour changer le couleur du case (x,y)
+  	public void changeColor(Node n, int x, int y, char c) {
+  		if(n.hauteur==0) {
+  			n.tab[(y-1)*3+(x-1)]=c;
+  			return;
+  		}else {
+  			if(x<=dim(n)/2 && y<=dim(n)/2) {
+  				changeColor(n.uu, x,y,c);
+  			} else {
+  				if(x<=dim(n)/2 && y>dim(n)/2) {
+  	  				changeColor(n.ud, x,y-(dim(n)/2),c);
+  	  				
+  	  			} else {
+  	  				if(x>dim(n)/2 && y>dim(n)/2) {
+  	  					changeColor(n.dd, x-(dim(n)/2),y-(dim(n)/2),c);
+  	  				
+  	  				}else {
+  	  					changeColor(n.du, x-(dim(n)/2),y,c);
+	  				
+  	  				}
+  	  			}	
+  			}	
+  		}
+  	}
+  	
+  	//pour calculer le nombre des c existant dans le plateua du jeux ("le score")
+  	public int showNumColor(Node n, char c) {
+  		int result=0;
+  		for(int i=1; i<=dim(n); i++) {//y
+  			for(int j=1; j<=dim(n); j++) {
+  				if(showColor(n,j,i)==c) {
+  					result++;
+  				}
+  			}
+  		}
+  		return result;
+  	}
+  	
 }
